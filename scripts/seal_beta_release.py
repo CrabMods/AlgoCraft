@@ -1,4 +1,4 @@
-"""Seal acceptance evidence for the exact Beta JAR. Does not install or publish."""
+"""Seal acceptance evidence for the exact release JAR. Does not install or publish."""
 import argparse
 import hashlib
 import io
@@ -19,6 +19,7 @@ p.add_argument("--minecraft", required=True)
 p.add_argument("--loader", choices=["neoforge", "forge"], required=True)
 a = p.parse_args()
 root = Path(__file__).resolve().parents[1]
+version = next(line.split("=", 1)[1] for line in (root / "gradle.properties").read_text().splitlines() if line.startswith("mod_version="))
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 def read(path):
@@ -29,7 +30,7 @@ def require(ok, message):
 
 build_log = a.build_log.read_text(encoding="utf-8", errors="replace")
 require("BUILD SUCCESSFUL" in build_log, "Canonical build did not pass")
-require("All 23 required tests passed" in build_log, "Required GameTest coverage is incomplete")
+require("All 29 required tests passed" in build_log, "Required GameTest coverage is incomplete")
 web = read(a.review / "web/result.json")
 binding = read(a.review / "web/source-binding.json")
 require(web["status"] == "passed" and web["headless"] and not web["systemClipboardUsed"]
@@ -81,7 +82,7 @@ for role in ("A", "B"):
 with zipfile.ZipFile(a.jar) as z:
     require(z.testzip() is None, "JAR integrity failed")
     meta = tomllib.loads(z.read(f"META-INF/{'neoforge.mods.toml' if a.loader == 'neoforge' else 'mods.toml'}").decode())
-    require(meta["mods"][0]["modId"] == "algocraft" and meta["mods"][0]["version"] == "0.1.0-beta", "Wrong mod identity")
+    require(meta["mods"][0]["modId"] == "algocraft" and meta["mods"][0]["version"] == version, "Wrong mod identity")
     deps = {v["modId"]: v for v in meta["dependencies"]["algocraft"]}
     require(a.minecraft in deps["minecraft"]["versionRange"] and a.loader in deps, "Wrong runtime metadata")
     require("assets/algocraft/compiler/ecj.jar" in z.namelist(), "Bundled compiler missing")
@@ -108,16 +109,16 @@ with zipfile.ZipFile(a.jar) as z:
                 and b"MixinConfigs: algocraft.unattended.mixins.json" in z.read("META-INF/MANIFEST.MF"), "Forge production mixin metadata missing")
         require(b"m_91087_" in z.read("com/crabmods/algocraft/client/test/BankMultiplayerClientTest.class"),
                 "Forge artifact was not reobfuscated for production Minecraft")
-out_jar = a.review / f"algocraft-{a.minecraft}-0.1.0-beta.jar"
+out_jar = a.review / f"algocraft-{a.minecraft}-{version}.jar"
 shutil.copyfile(a.jar, out_jar)
 for source, name in [(native, "native"), (multi, "multiplayer")]:
     shutil.copytree(source, a.review / name, dirs_exist_ok=True)
 source_hashes = {f.relative_to(root).as_posix(): sha(f) for f in (root / "src/main").rglob("*") if f.is_file()}
 receipt = {"status": "automated-acceptance-passed", "sealedAtUtc": datetime.now(timezone.utc).isoformat(),
-           "minecraft": a.minecraft, "loader": a.loader, "version": "0.1.0-beta", "jar": str(out_jar.resolve()),
+           "minecraft": a.minecraft, "loader": a.loader, "version": version, "jar": str(out_jar.resolve()),
            "jarSha256": sha(out_jar), "junit": counts, "junitTotal": sum(counts.values()), "junitXmlHashes": xml_hashes,
            "nativeChecks": len(result["checks"]), "nativeSessionId": result["sessionId"],
-           "gameTests": 23, "webChecks": len(web["checks"]), "webRenderedStatements": web["renderedStatements"],
+           "gameTests": 29, "webChecks": len(web["checks"]), "webRenderedStatements": web["renderedStatements"],
            "sourceHashes": source_hashes, "buildLogSha256": sha(a.build_log),
            "nativeReceiptHashes": {name: sha(native / f"{name}.json") for name in ("result", "launch", "exit")},
            "multiplayerReceiptHashes": {name: sha(multi / f"{name}.json") for name in ("A-result", "B-result", "server-result", "topology", "configuration-restored")},

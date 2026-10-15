@@ -6,7 +6,7 @@
 
 `Forge 1.20.1` · `NeoForge 1.21.1` · `500 problems` · `English & 简体中文`
 
-**Current release: 0.1.0 Beta** (`0.1.0-beta`). This early Beta is intended for player feedback on the learning flow and survival reward balance.
+**Current release: 0.1.1 Beta** (`0.1.1`). This early Beta is intended for player feedback on the learning flow and survival reward balance.
 
 [![Watch the AlgoCraft trailer](https://files.seeusercontent.com/2026/10/02/0fAt/trailer-poster.jpg)](https://www.youtube.com/watch?v=DsKH72bj73o)
 

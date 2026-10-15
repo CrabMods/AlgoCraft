@@ -4,7 +4,7 @@
 
 The trailer introduces learning algorithms in Minecraft with real Java editing,
 Run and Submit, 500 official problems, daily streak rewards and placeable trophies.
-It supports Forge 1.20.1 / Java 17 and NeoForge 1.21.1 / Java 21, at 0.1.0-beta.
+It supports Forge 1.20.1 / Java 17 and NeoForge 1.21.1 / Java 21, at 0.1.1 (Beta).
 
 The film uses English captions, music and effects, with no narration. Native
 Minecraft shots are camera moves over screenshots; calendars, reward cards and
