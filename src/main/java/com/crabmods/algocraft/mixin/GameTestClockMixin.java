@@ -16,7 +16,11 @@ public abstract class GameTestClockMixin {
         if (Boolean.getBoolean("algocraft.tests.realtimeGameTicks")) {
             // GameTestServer normally spins without the ordinary server's wait.
             // Its tick deadline must not outrun the isolated judge's real-time budget.
-            LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(50));
+            long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(50);
+            long remaining;
+            while ((remaining = deadline - System.nanoTime()) > 0 && !Thread.currentThread().isInterrupted()) {
+                LockSupport.parkNanos(remaining);
+            }
         }
     }
 }

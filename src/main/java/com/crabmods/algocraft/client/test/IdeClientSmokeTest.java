@@ -618,6 +618,13 @@ public final class IdeClientSmokeTest {
     }
 
     private void createTemporarySingleplayerWorld(Minecraft minecraft) {
+        try {
+            Path world = minecraft.gameDirectory.toPath().resolve("saves").resolve(this.smokeWorldId);
+            Files.createDirectories(world);
+            Files.writeString(world.resolve(".algocraft-test-world"), this.smokeWorldId, StandardCharsets.UTF_8);
+        } catch (IOException error) {
+            throw new IllegalStateException("Cannot mark the isolated test world", error);
+        }
         LevelSettings settings = new LevelSettings(
                 this.smokeWorldId,
                 GameType.CREATIVE,
@@ -1826,6 +1833,7 @@ public final class IdeClientSmokeTest {
             result.put("phase", phase.name());
             result.put("ticks", totalTicks);
             result.put("questionBankRoot", questionBankRoot.toString());
+            result.put("testWorldId", smokeWorldId);
             result.put("smokeProblemId", smokeProblemId);
             result.put("smokeProblemIds", smokeProblemIds);
             result.put("stressPasses", stressPasses);

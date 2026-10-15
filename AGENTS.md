@@ -21,3 +21,9 @@ Internal review, audit, handoff and acceptance reports belong in ignored build
 output or an external private evidence directory. Never commit test worlds,
 caches, logs, backups, temporary files or report artifacts. Public documentation
 covers players, contributors, schemas, licenses and release download links.
+
+Record player-facing fixes in focused GitHub issues with affected Minecraft/loader
+versions, reproduction steps, fix commits and the scope of actual validation.
+Include a short demonstration video when it clarifies the behavior, and close
+only when that issue's stated acceptance checks pass. Keep videos and raw test
+logs in issue attachments or release assets rather than the source tree.

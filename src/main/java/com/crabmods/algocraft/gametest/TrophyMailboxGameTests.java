@@ -87,8 +87,8 @@ public final class TrophyMailboxGameTests {
             manager.awardAchievement(player, "first_hard");
             manager.awardAchievement(player, "first_solve");
             check(data.isDirty(), "award and pending queue mark world data dirty");
+            var path = java.nio.file.Path.of("trophy-mailbox-restart-" + id + ".dat");
             try {
-                var path = java.nio.file.Path.of("trophy-mailbox-restart-" + id + ".dat");
                 NbtIo.writeCompressed(data.save(new CompoundTag(), helper.getLevel().registryAccess()), path);
                 var saved = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
                 var loaded = AlgoCraftSavedData.load(saved, helper.getLevel().registryAccess());
@@ -109,8 +109,11 @@ public final class TrophyMailboxGameTests {
                 player.getInventory().setItem(11, ItemStack.EMPTY);
                 check(manager.claimPendingTrophies(player) == 1 && manager.claimPendingTrophies(player) == 0,
                         "remaining award is claimed once after space is freed");
-                // Keep the fixture in the isolated runtime as acceptance evidence.
             } catch (java.io.IOException e) { throw new GameTestAssertException(e.toString()); }
+            finally {
+                try { Files.deleteIfExists(path); }
+                catch (java.io.IOException e) { throw new GameTestAssertException("Temporary trophy fixture cleanup failed: " + e); }
+            }
         });
         helper.succeed();
     }
