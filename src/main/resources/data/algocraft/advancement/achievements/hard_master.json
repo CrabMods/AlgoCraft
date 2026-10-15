@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/first_hard",
+  "display": {
+    "icon": {
+      "id": "algocraft:diamond_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.hard_master.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.hard_master.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

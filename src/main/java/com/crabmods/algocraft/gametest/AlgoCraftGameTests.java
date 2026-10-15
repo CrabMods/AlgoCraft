@@ -581,7 +581,9 @@ public final class AlgoCraftGameTests {
         helper.succeedWhen(() -> {
             assertTrue(future.isDone(), "async server judge should complete: " + asyncState(future, player, startedNanos));
             SubmissionResult result = future.join();
-            assertTrue(result.isSuccess(), "async correct code should pass the real server Judge");
+            assertTrue(result.isSuccess(), "async correct code should pass the real server Judge: "
+                    + result.getMessage() + " " + result.getDetails().stream()
+                    .map(detail -> detail.getError()).toList());
             assertTrue(data.isProblemSolved(playerUuid, problem.getId()),
                     "async accepted submission should record progress on the server thread");
             assertEquals(totalBefore + 1, data.getTotalSolved(playerUuid),

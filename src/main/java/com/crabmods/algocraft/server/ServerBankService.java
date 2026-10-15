@@ -109,6 +109,56 @@ public final class ServerBankService {
                     String name = StringArgumentType.getString(ctx, "name"), url = StringArgumentType.getString(ctx, "url");
                     return update(ctx.getSource(), () -> ProblemManager.downloadAndUpdateRepository(name, url), PublishedCatalog.repositoryId(name));
                 }))));
+        var trophy = Commands.literal("trophy");
+        trophy.then(Commands.literal("claim").executes(ctx -> {
+            ServerPlayer player = ctx.getSource().getPlayerOrException();
+            var manager = AlgoCraftSavedData.get(player.serverLevel()).getAchievementManager();
+            int delivered = manager.claimPendingTrophies(player);
+            ctx.getSource().sendSuccess(() -> Component.translatableWithFallback("algocraft.trophy.claim_result", "Delivered trophies / 已领取奖杯: %s", delivered), false);
+            return delivered;
+        }));
+        trophy.then(Commands.literal("list").executes(ctx -> {
+            ServerPlayer player = ctx.getSource().getPlayerOrException();
+            var data = AlgoCraftSavedData.get(player.serverLevel());
+            ctx.getSource().sendSuccess(() -> Component.translatableWithFallback("algocraft.trophy.pending_count", "Pending trophies / 待领取奖杯: %s. /algocraft trophy claim",
+                    data.getPendingTrophies(player.getUUID()).size()), false);
+            for (var award : data.getPendingTrophies(player.getUUID())) {
+                ctx.getSource().sendSuccess(() -> com.crabmods.algocraft.logic.AchievementRegistry
+                        .get(award.achievementId()).getName(), false);
+            }
+            return 1;
+        }));
+        trophy.then(Commands.literal("recover").requires(source -> source.hasPermission(2))
+                .then(Commands.argument("player", net.minecraft.commands.arguments.GameProfileArgument.gameProfile())
+                        .executes(ctx -> {
+                            int total = 0;
+                            for (var profile : net.minecraft.commands.arguments.GameProfileArgument.getGameProfiles(ctx, "player")) {
+                                var data = AlgoCraftSavedData.get(ctx.getSource().getServer().overworld());
+                                int count = data.getAchievementManager().recoverLegacyTrophies(profile.getId(), profile.getName(), data);
+                                ServerPlayer online = ctx.getSource().getServer().getPlayerList().getPlayer(profile.getId());
+                                if (online != null) data.getAchievementManager().claimPendingTrophies(online);
+                                ctx.getSource().sendSuccess(() -> Component.translatableWithFallback("algocraft.trophy.recovered",
+                                        "Queued legacy trophies for %s: %s / 旧版奖杯已保存待领取", profile.getName(), count), false);
+                                total += count;
+                            }
+                            return total;
+                        })));
+        trophy.then(Commands.literal("status").requires(source -> source.hasPermission(2))
+                .then(Commands.argument("player", net.minecraft.commands.arguments.GameProfileArgument.gameProfile())
+                        .executes(ctx -> {
+                            for (var profile : net.minecraft.commands.arguments.GameProfileArgument.getGameProfiles(ctx, "player")) {
+                                var data = AlgoCraftSavedData.get(ctx.getSource().getServer().overworld());
+                                var stats = data.getPlayerStats(profile.getId());
+                                int earned = data.getAchievementManager().getPlayerAchievements(profile.getId()).size();
+                                int pending = data.getPendingTrophies(profile.getId()).size();
+                                ctx.getSource().sendSuccess(() -> Component.translatableWithFallback("algocraft.trophy.status",
+                                        "AlgoCraft %s uuid=%s solved=%s easy=%s medium=%s hard=%s achievements=%s pending=%s",
+                                        profile.getName(), profile.getId().toString(), stats.totalSolved, stats.easyCount,
+                                        stats.mediumCount, stats.hardCount, earned, pending), false);
+                            }
+                            return 1;
+                        })));
+        root.then(trophy);
         root.then(bank);
         event.getDispatcher().register(root);
     }

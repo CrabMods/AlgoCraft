@@ -33,6 +33,8 @@ public class AchievementManager {
     private final Map<UUID, Set<String>> playerAchievements = new ConcurrentHashMap<>();
     
     private AchievementManager() {}
+
+    public Set<UUID> getTrackedPlayers() { return Set.copyOf(playerAchievements.keySet()); }
     
     public static AchievementManager createForWorld() {
         return new AchievementManager();
@@ -126,6 +128,7 @@ public class AchievementManager {
         
         // Award trophy item
         awardTrophy(player, achievement);
+        syncAdvancements(player);
         
         // Show achievement notification
         showAchievementNotification(player, achievement);
@@ -268,32 +271,82 @@ public class AchievementManager {
      * Award the trophy item to the player.
      */
     private void awardTrophy(ServerPlayer player, Achievement achievement) {
-        Item trophyItem = getTrophyItemForAchievement(achievement);
-        if (trophyItem == null) {
-            AlgoCraft.LOGGER.warn("No trophy item registered for achievement {} trophy id {}",
-                achievement.getId(), achievement.getTrophyItemId());
-            return;
-        }
-        
-        ItemStack trophy = TrophyItem.createTrophy(
-            trophyItem,
-            achievement,
-            player.getName().getString(),
-            player.getUUID().toString(),
-            Instant.now().toEpochMilli()
-        );
-        
-        // Give to player (drop if inventory full)
-        if (!player.getInventory().add(trophy)) {
-            player.drop(trophy, false);
-            player.sendSystemMessage(Component.translatable("algocraft.trophy.delivered_ground", achievement.getName())
-                    .withStyle(ChatFormatting.GOLD));
-        } else {
-            player.sendSystemMessage(Component.translatable("algocraft.trophy.delivered_inventory", achievement.getName())
-                    .withStyle(ChatFormatting.GOLD));
-        }
+        AlgoCraftSavedData data = AlgoCraftSavedData.get(player.serverLevel());
+        data.queueTrophy(player.getUUID(), achievement.getId(), player.getName().getString(),
+                Instant.now().toEpochMilli());
+        claimPendingTrophies(player);
     }
-    
+
+    /** Never use Inventory.add: a full creative inventory may consume the stack and return true. */
+    public int claimPendingTrophies(ServerPlayer player) {
+        AlgoCraftSavedData data = AlgoCraftSavedData.get(player.serverLevel());
+        int delivered = 0;
+        for (var award : data.getPendingTrophies(player.getUUID())) {
+            Achievement achievement = AchievementRegistry.get(award.achievementId());
+            Item item = achievement == null ? null : getTrophyItemForAchievement(achievement);
+            if (item == null) continue;
+            int slot = -1;
+            for (int i = 0; i < player.getInventory().items.size(); i++) {
+                if (player.getInventory().items.get(i).isEmpty()) { slot = i; break; }
+            }
+            if (slot < 0) break;
+            ItemStack trophy = TrophyItem.createTrophy(item, achievement, award.playerName(),
+                    player.getUUID().toString(), award.timestamp());
+            player.getInventory().setItem(slot, trophy.copy());
+            if (!ItemStack.matches(trophy, player.getInventory().getItem(slot))) {
+                throw new IllegalStateException("Trophy inventory insertion was not confirmed");
+            }
+            player.getInventory().setChanged();
+            player.inventoryMenu.broadcastChanges();
+            data.markTrophyDelivered(player.getUUID(), award.achievementId());
+            delivered++;
+            player.sendSystemMessage(Component.translatableWithFallback("algocraft.trophy.delivered_inventory", "Trophy added to inventory / 奖杯已放入物品栏: %s", achievement.getName())
+                    .withStyle(ChatFormatting.GOLD));
+        }
+        int pending = data.getPendingTrophies(player.getUUID()).size();
+        if (pending > 0) {
+            player.sendSystemMessage(Component.translatableWithFallback("algocraft.trophy.pending", "Pending trophies / 待领取奖杯: %s. Free slots, then claim / 腾出空位后领取:", pending)
+                    .withStyle(ChatFormatting.GOLD)
+                    .append(Component.translatableWithFallback("algocraft.trophy.claim_link", " /algocraft trophy claim").withStyle(style -> style
+                            .withColor(ChatFormatting.AQUA)
+                            .withClickEvent(new net.minecraft.network.chat.ClickEvent(
+                                    net.minecraft.network.chat.ClickEvent.Action.RUN_COMMAND,
+                                    "/algocraft trophy claim")))));
+        }
+        return delivered;
+    }
+
+    /** Admin-only recovery for old awards without a delivery receipt; each can be recovered once. */
+    public int recoverLegacyTrophies(ServerPlayer player) {
+        int queued = recoverLegacyTrophies(player.getUUID(), player.getName().getString(),
+                AlgoCraftSavedData.get(player.serverLevel()));
+        claimPendingTrophies(player);
+        return queued;
+    }
+    public int recoverLegacyTrophies(UUID uuid, String name, AlgoCraftSavedData data) {
+        int queued = 0;
+        for (String id : getPlayerAchievements(uuid)) {
+            if (AchievementRegistry.get(id) != null && !data.hasTrophyRecord(uuid, id)) {
+                data.queueTrophy(uuid, id, name, Instant.now().toEpochMilli());
+                queued++;
+            }
+        }
+        return queued;
+    }
+
+    /** Sync display progress only; this never awards or requeues a trophy. */
+    public void syncAdvancements(ServerPlayer player) {
+        Set<String> earned = getPlayerAchievements(player.getUUID());
+        if (earned.isEmpty()) return;
+        grantAdvancement(player, "root");
+        for (String id : earned) if (AchievementRegistry.get(id) != null) grantAdvancement(player, id);
+    }
+    private void grantAdvancement(ServerPlayer player, String id) {
+        var advancement = player.getServer().getAdvancements().get(
+                net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(AlgoCraft.MODID, "achievements/" + id));
+        if (advancement != null) player.getAdvancements().award(advancement, "earned");
+    }
+
     /**
      * Get the exact trophy item declared by the achievement.
      */

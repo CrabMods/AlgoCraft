@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/streak_30",
+  "display": {
+    "icon": {
+      "id": "algocraft:diamond_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.streak_100.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.streak_100.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

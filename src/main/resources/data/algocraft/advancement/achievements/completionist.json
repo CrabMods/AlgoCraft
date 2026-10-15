@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/root",
+  "display": {
+    "icon": {
+      "id": "algocraft:netherite_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.completionist.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.completionist.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

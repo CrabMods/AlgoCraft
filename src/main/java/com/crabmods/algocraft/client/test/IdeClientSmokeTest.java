@@ -230,6 +230,19 @@ public final class IdeClientSmokeTest {
             } else if (phase == Phase.CAPTURE_WIDE && phaseTicks >= 8) {
                 captureAndAssert(minecraft, "ide-wide", true);
                 setPhase(Phase.BUTTON_SEQUENCE);
+            } else if (phase == Phase.CAPTURE_ADVANCEMENTS && phaseTicks >= 12) {
+                require(minecraft.screen instanceof net.minecraft.client.gui.screens.advancements.AdvancementsScreen,
+                        "Vanilla Advancements screen is active for the AlgoCraft tree");
+                try (NativeImage image = Screenshot.takeScreenshot(minecraft.getMainRenderTarget())) {
+                    Path screenshotPath = outputDir.resolve("algocraft-advancement-tree.png");
+                    image.writeToFile(screenshotPath);
+                    java.util.Set<Integer> colors = new java.util.HashSet<>();
+                    for (int y = image.getHeight()/4; y < image.getHeight()*3/4; y+=3)
+                        for (int x = image.getWidth()/4; x < image.getWidth()*3/4; x+=3)
+                            colors.add(image.getPixelRGBA(x,y));
+                    require(colors.size() > 32, "AlgoCraft vanilla advancement tree is rendered with visible detail");
+                }
+                pass("passed", "IDE and vanilla advancement client acceptance completed");
             } else if (phase == Phase.CAPTURE_SAMPLE && phaseTicks >= 8) {
                 SmokeProblemCase sample = this.representativeCases.get(this.representativeCaseIndex);
                 captureAndAssert(minecraft, "sample-p" + sample.problem().getId(), true);
@@ -358,7 +371,18 @@ public final class IdeClientSmokeTest {
                 ModernAlgorithmScreen screen = (ModernAlgorithmScreen) minecraft.screen;
                 clickTopButton(screen, IdeLayoutEngine.Control.CLOSE);
                 require(!(minecraft.screen instanceof ModernAlgorithmScreen), "Close button exits the IDE screen");
-                pass("passed", "IDE client smoke test completed");
+                minecraft.options.guiScale().set(1);
+                configureWindow(minecraft, WIDE_WINDOW_WIDTH, WIDE_WINDOW_HEIGHT);
+                var server = minecraft.getSingleplayerServer();
+                require(server != null && minecraft.player != null, "Integrated server is ready for vanilla advancement review");
+                var playerId = minecraft.player.getUUID();
+                server.execute(() -> {
+                    var player = server.getPlayerList().getPlayer(playerId);
+                    var manager = com.crabmods.algocraft.logic.AchievementManager.forPlayer(player);
+                    manager.awardAchievement(player, "first_solve");
+                    manager.syncAdvancements(player);
+                });
+                setPhase(Phase.WAIT_ADVANCEMENTS);
             }
             case RESIZE_COMPACT -> {
                 ModernAlgorithmScreen screen = requireIdeScreen(minecraft);
@@ -440,6 +464,16 @@ public final class IdeClientSmokeTest {
                 require(code.equals(screen.getCodeTextForSmokeTest()), "Closing and reopening IDE restores the saved problem draft");
                 setPhase(Phase.CLOSE_IDE);
             }
+            case WAIT_ADVANCEMENTS -> {
+                var client = minecraft.player.connection.getAdvancements();
+                var root = client.get(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("algocraft", "achievements/root"));
+                if (root == null) return;
+                require(root != null, "AlgoCraft root advancement reached the real client");
+                minecraft.setScreen(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(client));
+                client.setSelectedTab(root, true);
+                setPhase(Phase.CAPTURE_ADVANCEMENTS);
+            }
+            case CAPTURE_ADVANCEMENTS -> { }
             case CAPTURE_WIDE, CAPTURE_SAMPLE, CAPTURE_NARROW, CAPTURE_COMPACT, FINISHED -> {
             }
         }
@@ -1882,6 +1916,8 @@ public final class IdeClientSmokeTest {
         WAIT_PRODUCTION_RUN,
         WAIT_PRODUCTION_SUBMIT,
         CLOSE_IDE,
+        WAIT_ADVANCEMENTS,
+        CAPTURE_ADVANCEMENTS,
         FINISHED
     }
 

@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/first_solve",
+  "display": {
+    "icon": {
+      "id": "algocraft:bronze_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.apprentice.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.apprentice.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

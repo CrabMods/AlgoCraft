@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/journeyman",
+  "display": {
+    "icon": {
+      "id": "algocraft:silver_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.expert.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.expert.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

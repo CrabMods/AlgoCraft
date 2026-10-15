@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "com.crabmods.algocraft.mixin",
   "compatibilityLevel": "JAVA_21",
+  "mixins": ["GameTestClockMixin"],
   "client": ["UnattendedWindowMixin", "UnattendedInputMixin", "UnattendedAudioMixin", "UnattendedClipboardMixin"],
   "injectors": { "defaultRequire": 1 }
 }

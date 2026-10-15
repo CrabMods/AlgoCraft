@@ -31,7 +31,11 @@ You can clear several new problems on the same day. A previously solved problem 
 
 Unique-clear item milestones are **10, 25, 50, 100, 200 and 500**. The 500-clear milestone gives a **dragon egg**. Trophy achievements have their own thresholds, including first clear, problem-count milestones, streaks and difficulty achievements.
 
-Trophies arrive automatically when an achievement unlocks; there is no claim screen or button. Open your inventory (default key **E**) and look for the achievement name, such as **First Steps**. Chat confirms whether the trophy was added to your inventory or dropped at your feet because your inventory was full.
+Trophies are delivered automatically when inventory space is available. Open your inventory (default key **E**) and look for the achievement name, such as **First Steps**. If your inventory is full, the server keeps the trophy in a persistent pending list instead of dropping it. Free slots and click the chat claim link, or use `/algocraft trophy claim`. `/algocraft trophy list` shows pending awards. These records survive normal server saves and restarts; claiming preserves the owner and original award date and does not duplicate a delivered award.
+
+Minecraft's **Advancements** screen (default key **L**) has an **AlgoCraft** tree with the same 23 achievements. Holding the Algorithm Computer opens the tab; previously earned achievements sync when you join. Opening the tree does not issue another trophy.
+
+For trophies lost by the old full-inventory behavior, an administrator can use `/algocraft trophy recover <player>`. It restores only saved earned achievements that have no delivery receipt and can recover each legacy award once. Offline players receive a pending record and can claim when they return. Use `/algocraft trophy status <player>` to audit saved solve counts, earned achievements, and pending trophies. Recovery uses the time of recovery because the old save did not retain the original trophy's date.
 
 There are five trophy materials: **bronze, silver, gold, diamond and netherite**. Each earned trophy records your player name, award date and achievement. Place trophies on blocks to display them in your base, or use vanilla item frames. Breaking a placed trophy returns the same award, with its owner, date and achievement preserved. Clearing every problem in an enabled server bank awards the **netherite Completionist trophy**; the official bank has 500 problems.
 

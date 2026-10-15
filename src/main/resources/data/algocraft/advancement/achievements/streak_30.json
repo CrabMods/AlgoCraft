@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/streak_14",
+  "display": {
+    "icon": {
+      "id": "algocraft:gold_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.streak_30.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.streak_30.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

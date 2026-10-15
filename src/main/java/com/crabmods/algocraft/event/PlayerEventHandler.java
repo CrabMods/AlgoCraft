@@ -15,6 +15,8 @@ public class PlayerEventHandler {
         if (event.getEntity() instanceof ServerPlayer player) {
             com.crabmods.algocraft.server.ServerBankService.announce(player);
             AlgoCraftSavedData data = AlgoCraftSavedData.get(player.serverLevel());
+            data.getAchievementManager().syncAdvancements(player);
+            data.getAchievementManager().claimPendingTrophies(player);
             PacketSyncProgress.sendSafely(player, data.getPlayerProgress(player.getUUID()));
         }
     }

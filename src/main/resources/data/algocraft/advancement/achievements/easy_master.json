@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/first_easy",
+  "display": {
+    "icon": {
+      "id": "algocraft:silver_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.easy_master.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.easy_master.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
