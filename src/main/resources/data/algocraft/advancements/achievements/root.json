@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "item": "algocraft:algorithm_computer"
+    },
+    "title": {
+      "text": "AlgoCraft"
+    },
+    "description": {
+      "translate": "algocraft.advancement.root.desc"
+    },
+    "background": "minecraft:textures/block/deepslate_tiles.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    },
+    "computer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "algocraft:algorithm_computer"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "earned",
+      "computer"
+    ]
+  ]
+}

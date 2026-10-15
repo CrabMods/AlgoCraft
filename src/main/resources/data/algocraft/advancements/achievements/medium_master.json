@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/first_medium",
+  "display": {
+    "icon": {
+      "item": "algocraft:gold_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.medium_master.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.medium_master.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

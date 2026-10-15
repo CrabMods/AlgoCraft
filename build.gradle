@@ -90,6 +90,7 @@ legacyForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
+            systemProperty 'algocraft.tests.realtimeGameTicks', 'true'
             jvmArguments.addAll '-Xms256m', '-Xmx2G', '-XX:ActiveProcessorCount=2'
             systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }

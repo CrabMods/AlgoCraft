@@ -3,7 +3,6 @@ package com.crabmods.algocraft.world;
 import com.crabmods.algocraft.logic.AchievementManager;
 import com.crabmods.algocraft.logic.Problem;
 import com.crabmods.algocraft.logic.ProblemManager;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -39,6 +38,32 @@ public class AlgoCraftSavedData extends SavedData {
     
     // UUID -> PlayerStats (streak, total solved, etc.)
     private final Map<UUID, PlayerStats> playerStats = new ConcurrentHashMap<>();
+
+    // Award records survive normal world save/reload. Delivered entries remain as receipts.
+    private final Map<UUID, Map<String, TrophyAward>> trophyAwards = new ConcurrentHashMap<>();
+    public record TrophyAward(String achievementId, String playerName, long timestamp, boolean delivered) {}
+
+    public void queueTrophy(UUID player, String id, String name, long timestamp) {
+        trophyAwards.computeIfAbsent(player, key -> new ConcurrentHashMap<>())
+                .putIfAbsent(id, new TrophyAward(id, name, timestamp, false));
+        setDirty();
+    }
+    public boolean hasTrophyRecord(UUID player, String id) {
+        return trophyAwards.getOrDefault(player, Map.of()).containsKey(id);
+    }
+    public java.util.List<TrophyAward> getPendingTrophies(UUID player) {
+        return trophyAwards.getOrDefault(player, Map.of()).values().stream()
+                .filter(award -> !award.delivered())
+                .sorted(java.util.Comparator.comparingLong(TrophyAward::timestamp)
+                        .thenComparing(TrophyAward::achievementId)).toList();
+    }
+    public void markTrophyDelivered(UUID player, String id) {
+        var awards = trophyAwards.get(player);
+        if (awards == null || !awards.containsKey(id)) throw new IllegalStateException("Missing trophy award");
+        TrophyAward award = awards.get(id);
+        awards.put(id, new TrophyAward(id, award.playerName(), award.timestamp(), true));
+        setDirty();
+    }
 
     public static AlgoCraftSavedData get(ServerLevel level) {
         // A player has one learning history across all dimensions of this save.
@@ -95,6 +120,11 @@ public class AlgoCraftSavedData extends SavedData {
             achievements.addAll(legacy.achievementManager.getPlayerAchievements(uuid));
             achievementManager.loadPlayerAchievementsFromSet(uuid, achievements);
         }
+        legacy.trophyAwards.forEach((uuid, awards) -> {
+            var target = trophyAwards.computeIfAbsent(uuid, key -> new ConcurrentHashMap<>());
+            awards.forEach((id, award) -> target.merge(id, award,
+                    (left, right) -> left.delivered() ? left : right));
+        });
         setDirty();
     }
     
@@ -139,6 +169,17 @@ public class AlgoCraftSavedData extends SavedData {
                 data.playerStats.put(uuid, stats);
             }
             
+            Map<String, TrophyAward> awards = new ConcurrentHashMap<>();
+            for (Tag entry : playerTag.getList("TrophyAwards", Tag.TAG_COMPOUND)) {
+                CompoundTag award = (CompoundTag) entry;
+                String id = award.getString("AchievementId");
+                if (com.crabmods.algocraft.logic.AchievementRegistry.get(id) != null) {
+                    awards.put(id, new TrophyAward(id, award.getString("PlayerName"),
+                            award.getLong("Timestamp"), award.getBoolean("Delivered")));
+                }
+            }
+            if (!awards.isEmpty()) data.trophyAwards.put(uuid, awards);
+
             // Load player achievements into AchievementManager
             if (playerTag.contains("Achievements")) {
                 ListTag achievementsList = playerTag.getList("Achievements", Tag.TAG_STRING);
@@ -161,12 +202,16 @@ public class AlgoCraftSavedData extends SavedData {
         tag.put("EnabledBanks", banks);
         ListTag playersList = new ListTag();
         
-        for (Map.Entry<UUID, Map<String, Long>> entry : playerProgress.entrySet()) {
+        Set<UUID> playerIds = new HashSet<>(playerProgress.keySet());
+        playerIds.addAll(playerStats.keySet());
+        playerIds.addAll(trophyAwards.keySet());
+        playerIds.addAll(achievementManager.getTrackedPlayers());
+        for (UUID playerId : playerIds) {
             CompoundTag playerTag = new CompoundTag();
-            playerTag.putUUID("UUID", entry.getKey());
+            playerTag.putUUID("UUID", playerId);
             
             ListTag problemsList = new ListTag();
-            for (Map.Entry<String, Long> probEntry : entry.getValue().entrySet()) {
+            for (Map.Entry<String, Long> probEntry : playerProgress.getOrDefault(playerId, Map.of()).entrySet()) {
                 CompoundTag probTag = new CompoundTag();
                 probTag.putString("ID", probEntry.getKey());
                 probTag.putLong("Time", probEntry.getValue());
@@ -175,7 +220,7 @@ public class AlgoCraftSavedData extends SavedData {
             playerTag.put("Problems", problemsList);
             
             // Save player stats
-            PlayerStats stats = playerStats.get(entry.getKey());
+            PlayerStats stats = playerStats.get(playerId);
             if (stats != null) {
                 CompoundTag statsTag = new CompoundTag();
                 statsTag.putInt("CurrentStreak", stats.currentStreak);
@@ -190,7 +235,7 @@ public class AlgoCraftSavedData extends SavedData {
             }
             
             // Save player achievements from AchievementManager
-            Set<String> achievements = achievementManager.getPlayerAchievements(entry.getKey());
+            Set<String> achievements = achievementManager.getPlayerAchievements(playerId);
             if (!achievements.isEmpty()) {
                 ListTag achievementsList = new ListTag();
                 for (String achievementId : achievements) {
@@ -199,6 +244,16 @@ public class AlgoCraftSavedData extends SavedData {
                 playerTag.put("Achievements", achievementsList);
             }
             
+            ListTag awards = new ListTag();
+            trophyAwards.getOrDefault(playerId, Map.of()).values().forEach(award -> {
+                CompoundTag saved = new CompoundTag();
+                saved.putString("AchievementId", award.achievementId());
+                saved.putString("PlayerName", award.playerName());
+                saved.putLong("Timestamp", award.timestamp());
+                saved.putBoolean("Delivered", award.delivered());
+                awards.add(saved);
+            });
+            playerTag.put("TrophyAwards", awards);
             playersList.add(playerTag);
         }
         

@@ -582,10 +582,13 @@ public final class AlgoCraftGameTests {
                 }
                 """, 120_000L);
 
-        helper.succeedWhen(() -> {
-            assertTrue(future.isDone(), "async server judge should complete: " + asyncState(future, player, startedNanos));
+        helper.startSequence().thenWaitUntil(() ->
+                assertTrue(future.isDone(), "async server judge should complete: " + asyncState(future, player, startedNanos)))
+                .thenExecute(() -> {
             SubmissionResult result = future.join();
-            assertTrue(result.isSuccess(), "async correct code should pass the real server Judge");
+            assertTrue(result.isSuccess(), "async correct code should pass the real server Judge: "
+                    + result.getMessage() + " " + result.getDetails().stream()
+                    .map(detail -> detail.getError()).toList());
             assertTrue(data.isProblemSolved(playerUuid, problem.getId()),
                     "async accepted submission should record progress on the server thread");
             assertEquals(totalBefore + 1, data.getTotalSolved(playerUuid),
@@ -596,7 +599,7 @@ public final class AlgoCraftGameTests {
                     "async accepted submission should increment consecutive-correct submissions");
             assertTrue(countTotalInventoryItems(player) > 0,
                     "async accepted submission should grant reward items after server-thread application");
-        });
+        }).thenSucceed();
     }
 
     @GameTest(template = EMPTY_TEMPLATE, timeoutTicks = ASYNC_SUBMISSION_TIMEOUT_TICKS,

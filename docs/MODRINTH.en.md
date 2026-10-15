@@ -18,7 +18,7 @@
 2. **Place it and right-click.** The IDE opens with the problem list on the left, the statement in the middle and your code on the right.
 3. **Pick an easy problem** such as *Two Sum*, *Contains Duplicate* or *Valid Anagram*. Every problem comes with starter code and the method you need to fill in.
 4. **Run** to check the visible examples, then **Submit** when you are confident.
-5. **Check your inventory** for your automatically delivered reward, then come back tomorrow to keep your streak alive. If your inventory is full, pick up the items at your feet.
+5. **Check your inventory** for your automatically delivered reward, then come back tomorrow to keep your streak alive. Full-inventory trophies are saved on the server; free a slot and click the chat claim link or use `/algocraft trophy claim`.
 
 | | | |
 | --- | --- | --- |
@@ -77,7 +77,9 @@ Days are counted on the server's clock; miss a day and the streak starts again f
 
 ## A trophy shelf worth building
 
-Achievements become real 3D trophies in five tiers: **bronze, silver, gold, diamond and netherite**. Each one is engraved with your name, the date and the achievement, and can be placed on a floor, shelf or desk, or displayed in an item frame. Breaking a placed trophy returns it with its engraving intact. There are **23 achievements**: solve milestones (1 to 500), streaks (3 to 100 days), difficulty goals, and specials like *Night Owl*, *Speed Demon*, *Perfectionist* and the netherite **Completionist** for clearing every problem in a bank.
+Achievements become real 3D trophies in five tiers: **bronze, silver, gold, diamond and netherite**. Each one is engraved with your name, the date and the achievement, and can be placed on a floor, shelf or desk, or displayed in an item frame. Breaking a placed trophy returns it with its engraving intact. Open Minecraft’s **Advancements** screen (default **L**) to see the **AlgoCraft** achievement tree. Pending trophies and achievement progress survive normal server saves and restarts.
+
+There are **23 achievements**: solve milestones (1 to 500), streaks (3 to 100 days), difficulty goals, and specials like *Night Owl*, *Speed Demon*, *Perfectionist* and the netherite **Completionist** for clearing every problem in a bank.
 
 ![Five trophy tiers](https://files.seeusercontent.com/2026/10/02/b6Ce/feature-trophies.jpg)
 

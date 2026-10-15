@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/root",
+  "display": {
+    "icon": {
+      "item": "algocraft:silver_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.speed_demon.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.speed_demon.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

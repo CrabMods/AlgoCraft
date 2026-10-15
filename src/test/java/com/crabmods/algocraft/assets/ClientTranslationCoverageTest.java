@@ -33,7 +33,7 @@ class ClientTranslationCoverageTest {
     );
     private static final Path WEB_SERVER = SOURCE_DIR.resolve("web").resolve("AlgoCraftWebServer.java");
     private static final Pattern TRANSLATABLE_KEY =
-            Pattern.compile("Component\\.translatable\\(\"([^\"]+)\"\\s*[,)]");
+            Pattern.compile("Component\\.translatable(?:WithFallback)?\\(\\s*\"([^\"]+)\"\\s*[,)]");
     private static final Pattern COMPONENT_LITERAL_STRING =
             Pattern.compile("Component\\.literal\\(\"([^\"]*)\"\\)");
     private static final Pattern WEB_I18N_ATTRIBUTE =
@@ -94,6 +94,13 @@ class ClientTranslationCoverageTest {
     );
 
     private static final Set<String> TROPHY_KEYS = Set.of(
+            "algocraft.trophy.delivered_inventory",
+            "algocraft.trophy.pending",
+            "algocraft.trophy.pending_count",
+            "algocraft.trophy.claim_result",
+            "algocraft.trophy.recovered",
+            "algocraft.trophy.claim_link",
+            "algocraft.trophy.status",
             "item.algocraft.bronze_trophy",
             "item.algocraft.silver_trophy",
             "item.algocraft.gold_trophy",

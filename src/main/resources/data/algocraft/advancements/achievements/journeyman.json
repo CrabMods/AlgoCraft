@@ -1,0 +1,23 @@
+{
+  "parent": "algocraft:achievements/apprentice",
+  "display": {
+    "icon": {
+      "item": "algocraft:silver_trophy"
+    },
+    "title": {
+      "translate": "algocraft.achievement.journeyman.name"
+    },
+    "description": {
+      "translate": "algocraft.achievement.journeyman.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "earned": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}
