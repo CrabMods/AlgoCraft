@@ -377,6 +377,19 @@ tasks.named('test', Test) {
         mustRunAfter 'runGameTestServer'
         finalizedBy restore
         doFirst {
+            // Only marked, harness-owned worlds are eligible; keep one previous run.
+            def saves = new File(runtime, 'saves')
+            def ownedWorlds = (saves.listFiles() ?: []).findAll { world ->
+                def marker = new File(world, '.algocraft-test-world')
+                world.isDirectory() && !java.nio.file.Files.isSymbolicLink(world.toPath())
+                        && world.name ==~ /algocraft_ide_smoke_[0-9]+/
+                        && marker.isFile() && marker.getText('UTF-8') == world.name
+            }.sort { left, right -> right.lastModified() <=> left.lastModified() }
+            ownedWorlds.drop(1).each { world ->
+                java.nio.file.Files.walk(world.toPath()).withCloseable { entries ->
+                    entries.sorted(Comparator.reverseOrder()).forEach { java.nio.file.Files.delete(it) }
+                }
+            }
             environment 'ALGOCRAFT_TEST_SESSION_ID', sessionId
             def sourceHashes = projectSourceFiles.sort().collectEntries { path ->
                 [(projectRootPath.relativize(path.toPath()).toString()):
@@ -890,14 +903,15 @@ tasks.register('verifyIdeClientSmokeResult') {
     }
 }
 
-tasks.register('cleanIdeClientSmokeOutput', Delete) {
+tasks.register('archiveIdeClientSmokeOutput', Sync) {
     dependsOn 'algocraftTestRuntimeLease'
-    doFirst {
-        def prior = ideSmokeOutputDir.get().asFile
-        if (new File(prior, 'result.json').isFile()) {
-            copy { from prior; into layout.buildDirectory.dir("review/client-history/smoke-${UUID.randomUUID()}") }
-        }
-    }
+    from ideSmokeOutputDir
+    into layout.buildDirectory.dir('client-history/smoke-previous')
+    onlyIf { new File(ideSmokeOutputDir.get().asFile, 'result.json').isFile() }
+}
+
+tasks.register('cleanIdeClientSmokeOutput', Delete) {
+    dependsOn 'archiveIdeClientSmokeOutput'
     delete ideSmokeOutputDir
 }
 
@@ -948,14 +962,15 @@ tasks.register('verifyIdeClientStressResult') {
     }
 }
 
-tasks.register('cleanIdeClientStressOutput', Delete) {
+tasks.register('archiveIdeClientStressOutput', Sync) {
     dependsOn 'algocraftTestRuntimeLease'
-    doFirst {
-        def prior = ideStressOutputDir.get().asFile
-        if (new File(prior, 'result.json').isFile()) {
-            copy { from prior; into layout.buildDirectory.dir("review/client-history/stress-${UUID.randomUUID()}") }
-        }
-    }
+    from ideStressOutputDir
+    into layout.buildDirectory.dir('client-history/stress-previous')
+    onlyIf { new File(ideStressOutputDir.get().asFile, 'result.json').isFile() }
+}
+
+tasks.register('cleanIdeClientStressOutput', Delete) {
+    dependsOn 'archiveIdeClientStressOutput'
     delete ideStressOutputDir
 }
 
