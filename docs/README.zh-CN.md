@@ -6,6 +6,8 @@
 
 `Forge 1.20.1` · `NeoForge 1.21.1` · `500 道题` · `English & 简体中文`
 
+**下载：** [CurseForge](https://www.curseforge.com/minecraft/mc-mods/algocraft) · [Modrinth](https://modrinth.com/mod/algocraft) · [GitHub](https://github.com/crabsatellite/AlgoCraft)
+
 **当前版本：0.1.1 Beta**（`0.1.1`）。这是用于收集玩家对学习流程和生存奖励平衡反馈的早期测试版本。
 
 [![观看 AlgoCraft 预告片](https://files.seeusercontent.com/2026/10/02/0fAt/trailer-poster.jpg)](https://www.youtube.com/watch?v=DsKH72bj73o)
@@ -109,7 +111,9 @@ https://www.youtube.com/watch?v=DsKH72bj73o
 
 ## 下载
 
-[CurseForge](https://www.curseforge.com/minecraft/mc-mods/algocraft) · [Modrinth](https://modrinth.com/mod/algocraft) · [GitHub](https://github.com/crabsatellite/AlgoCraft)
+- **CurseForge:** <https://www.curseforge.com/minecraft/mc-mods/algocraft>
+- **Modrinth:** <https://modrinth.com/mod/algocraft>
+- **GitHub:** <https://github.com/crabsatellite/AlgoCraft>
 
 ## 安装
 
