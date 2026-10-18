@@ -1,22 +1,6 @@
 # AlgoCraft
 
-在 Minecraft 中练习算法：用算法电脑编写真正的 Java，挑战内置 500 道题，获得生存奖励和可摆放的奖杯。
+The README is maintained in English: [read the project README](../README.md).
 
-[CurseForge 下载](https://www.curseforge.com/minecraft/mc-mods/algocraft) · [Modrinth](https://modrinth.com/mod/algocraft) · [完整指南](https://crabmods.com/mods/algocraft) · [预告片](https://www.youtube.com/watch?v=DsKH72bj73o) · [English](../README.md)
+> **Full player guide:** For advanced features, complete recipes, detailed effects, configuration and compatibility, visit the [official AlgoCraft guide](https://crabmods.com/mods/algocraft).
 
-- 游戏内 IDE 与本地 Web IDE，支持英文和简体中文。
-- 服务器判定公共题目的示例与隐藏测试。
-- 首通、每日复习和连续解题奖励，以及刻有名字和日期的奖杯。
-- 服务器管理公共题库，个人导入用于不发放奖励的练习。
-
-## 安装与开始
-
-Forge 1.20.1 使用 Java 17；NeoForge 1.21.1 使用 Java 21。服务端和所有客户端需安装匹配版本。
-
-用 6 个铁锭、2 个红石粉和 1 块玻璃合成算法电脑，放置并右键，选一道简单题，补全 Java 方法，先 Run 再 Submit。内置题库和游戏内 IDE 可离线使用；Web IDE 需要运行中的已连接客户端，并联网加载编辑器资源。
-
-背包满时奖杯保存在服务器，腾出空位后用 `/algocraft trophy claim` 领取。
-
-[玩法、奖励、命令和配置](https://crabmods.com/mods/algocraft) · [离线玩家参考](PLAYER_GUIDE.md) · [开发说明](DEVELOPING.md) · [版本记录](https://github.com/CrabMods/AlgoCraft/releases) · [问题反馈](https://github.com/CrabMods/AlgoCraft/issues)
-
-代码采用 [MIT](../LICENSE)；[第三方声明](../THIRD_PARTY_NOTICES.md)与[影片素材及署名](PROMO_MEDIA.md)。
