@@ -15,7 +15,7 @@ loaderVersion="${loader_version_range}" #mandatory
 license="${mod_license}"
 
 # A URL to refer people to when problems occur with this mod
-issueTrackerURL="https://github.com/crabsatellite/AlgoCraft/issues"
+issueTrackerURL="https://github.com/CrabMods/AlgoCraft/issues"
 
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
@@ -30,10 +30,10 @@ version="${mod_version}" #mandatory
 displayName="${mod_name}" #mandatory
 
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforged.net/docs/misc/updatechecker/
-updateJSONURL="https://raw.githubusercontent.com/crabsatellite/AlgoCraft/1.21.1/update.json"
+updateJSONURL="https://raw.githubusercontent.com/CrabMods/AlgoCraft/1.21.1/update.json"
 
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://github.com/crabsatellite/AlgoCraft"
+displayURL="https://github.com/CrabMods/AlgoCraft"
 
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="algocraft-icon.png"

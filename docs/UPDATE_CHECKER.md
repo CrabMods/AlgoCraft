@@ -4,7 +4,7 @@ AlgoCraft uses the loader update checker to show a notification in the Minecraft
 
 The stable update feed is:
 
-`https://raw.githubusercontent.com/crabsatellite/AlgoCraft/1.21.1/update.json`
+`https://raw.githubusercontent.com/CrabMods/AlgoCraft/1.21.1/update.json`
 
 It tracks both supported game versions:
 
