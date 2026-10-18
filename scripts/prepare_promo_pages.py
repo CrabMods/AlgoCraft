@@ -10,8 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / 'docs'
 PREVIEW = ROOT / 'build' / 'promo' / 'pages'
 PREVIEW.mkdir(parents=True, exist_ok=True)
-RAW = 'https://raw.githubusercontent.com/crabsatellite/AlgoCraft/1.21.1/docs/media/'
-BLOB = 'https://github.com/crabsatellite/AlgoCraft/blob/1.21.1/'
+RAW = 'https://raw.githubusercontent.com/CrabMods/AlgoCraft/1.21.1/docs/media/'
+BLOB = 'https://github.com/CrabMods/AlgoCraft/blob/1.21.1/'
 TRAILER = 'https://www.youtube.com/watch?v=DsKH72bj73o'
 EMBED = 'https://www.youtube.com/embed/DsKH72bj73o?rel=0'
 STYLE = ('html{color-scheme:dark}body{margin:0;background:#0d1117;color:#e6edf3;font:16px/1.65 -apple-system,"Segoe UI",system-ui,"Microsoft YaHei",sans-serif}'

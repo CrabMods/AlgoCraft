@@ -7,7 +7,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA = ROOT / 'docs' / 'media'
-RAW = 'https://raw.githubusercontent.com/crabsatellite/AlgoCraft/1.21.1/docs/media/'
+RAW = 'https://raw.githubusercontent.com/CrabMods/AlgoCraft/1.21.1/docs/media/'
 NOWIN = 0x08000000 if os.name == 'nt' else 0
 checks = []
 media_only = '--media-only' in sys.argv

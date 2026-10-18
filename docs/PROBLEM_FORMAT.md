@@ -3,7 +3,7 @@
 Use the same JSON format as AlgoCraft's built-in bank. Start with the
 [downloadable example](examples/p9001.json), or browse a complete
 [official problem](../question_bank/official/p1.json) in our
-[GitHub repository](https://github.com/crabsatellite/AlgoCraft).
+[GitHub repository](https://github.com/CrabMods/AlgoCraft).
 Both Minecraft versions use this format.
 
 ## One problem for personal practice

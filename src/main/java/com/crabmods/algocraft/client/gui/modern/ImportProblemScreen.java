@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
 public class ImportProblemScreen extends Screen {
-    public static final String FORMAT_GUIDE_URL = "https://github.com/crabsatellite/AlgoCraft/blob/1.21.1/docs/PROBLEM_FORMAT.md";
+    public static final String FORMAT_GUIDE_URL = "https://github.com/CrabMods/AlgoCraft/blob/1.21.1/docs/PROBLEM_FORMAT.md";
     private final Screen parent;
     private EditBox inputField;
     private EditBox nameField;

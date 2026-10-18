@@ -22,7 +22,7 @@ public class OfficialRepository implements ProblemRepository {
     private static final System.Logger LOGGER = System.getLogger(OfficialRepository.class.getName());
     private static final Gson GSON = new GsonBuilder().create();
     static final String DEFAULT_REPOSITORY_URL =
-            "https://raw.githubusercontent.com/crabsatellite/AlgoCraft/1.21.1/question_bank/official";
+            "https://raw.githubusercontent.com/CrabMods/AlgoCraft/1.21.1/question_bank/official";
     
     private final Path cacheDir;
     private final AtomicReference<List<Problem>> problems = new AtomicReference<>(List.of());

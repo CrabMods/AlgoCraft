@@ -6,7 +6,7 @@
 
 `Forge 1.20.1` · `NeoForge 1.21.1` · `500 道题` · `English & 简体中文`
 
-**下载：** [CurseForge](https://www.curseforge.com/minecraft/mc-mods/algocraft) · [Modrinth](https://modrinth.com/mod/algocraft) · [GitHub](https://github.com/crabsatellite/AlgoCraft)
+**下载：** [CurseForge](https://www.curseforge.com/minecraft/mc-mods/algocraft) · [Modrinth](https://modrinth.com/mod/algocraft) · [GitHub](https://github.com/CrabMods/AlgoCraft)
 
 **当前版本：0.1.1 Beta**（`0.1.1`）。这是用于收集玩家对学习流程和生存奖励平衡反馈的早期测试版本。
 
@@ -113,7 +113,7 @@ https://www.youtube.com/watch?v=DsKH72bj73o
 
 - **CurseForge:** <https://www.curseforge.com/minecraft/mc-mods/algocraft>
 - **Modrinth:** <https://modrinth.com/mod/algocraft>
-- **GitHub:** <https://github.com/crabsatellite/AlgoCraft>
+- **GitHub:** <https://github.com/CrabMods/AlgoCraft>
 
 ## 安装
 
@@ -142,4 +142,4 @@ https://www.youtube.com/watch?v=DsKH72bj73o
 
 预告片音乐：“Voxel Revolution”，Kevin MacLeod（[incompetech.com](https://incompetech.com)），[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 授权。音效来自 [Kenney](https://kenney.nl)（CC0）。
 
-自定义题目：在导入页面点击 **官方格式**，查看 [JSON 示例和格式说明](PROBLEM_FORMAT.md)，或访问 [GitHub 源码](https://github.com/crabsatellite/AlgoCraft)。
+自定义题目：在导入页面点击 **官方格式**，查看 [JSON 示例和格式说明](PROBLEM_FORMAT.md)，或访问 [GitHub 源码](https://github.com/CrabMods/AlgoCraft)。
